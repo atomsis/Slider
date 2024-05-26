@@ -5,123 +5,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Agency</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        .slider img { width: 100%; }
-        .slider-nav img { cursor: pointer; }
-        .modal-fullscreen { width: 100%; height: 100%; }
-        .modal-content { background: transparent; border: none; }
-        .modal-body { display: flex; justify-content: center; align-items: center; }
+        body {
+            background-color: #2d2d2d;
+            color: #fff;
+        }
+        .navbar {
+            background-color: #1a1a1a;
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .form-control {
+            background-color: #3a3a3a;
+            color: #fff;
+            border: 1px solid #555;
+        }
+        .btn-primary {
+            background-color: #e53e3e;
+            border-color: #e53e3e;
+        }
+        .btn-primary:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        #fullscreenImage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            text-align: center;
+        }
+
+        #fullscreenImage img {
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 5%;
+            border: 5px solid #fff;
+            box-sizing: border-box;
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .close-button:hover {
+            color: #ccc;
+        }
+
+        .arrow-left button, .arrow-right button {
+            font-size: 15%; /* Увеличиваем размер шрифта */
+            width: 15%; /* Увеличиваем ширину кнопок */
+            height: 15%; /* Увеличиваем высоту кнопок */
+            }
+        #mainImage {
+            max-width: 100%;
+            height: auto;
+            }
+</style>
+
     </style>
+
 </head>
 <body>
-    <!-- Header -->
-    <header class="bg-primary text-white text-center py-3">
-        <h1>Space Agency</h1>
-        <a href="{% url 'account_login' %}" class="btn btn-secondary">Войти</a>
-    </header>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">NASA</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Преимущества</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Фотографии</a>
+                </li>
 
-    <!-- Main Content -->
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-12">
-                <h2>О космическом агентстве</h2>
-                <p>Космическое агентство занимается исследованием космоса и разработкой инновационных технологий...</p>
-            </div>
-        </div>
-
-        <!-- Slider -->
-        <div class="slider slider-for mb-4">
-            {% for item in slider_items %}
-            <div>
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-slide-to="{{ forloop.counter0 }}">
-            </div>
-            {% endfor %}
-        </div>
-        <div class="slider slider-nav mt-3">
-            {% for item in slider_items %}
-            <div>
-                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-fluid">
-            </div>
-            {% endfor %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">Приветствую, {{ user.username }}</span>
+                    </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary" href="{% url 'account_login' %}">Вход</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-secondary" href="{% url 'account_signup' %}">Регистрация</a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
+</nav>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-        <p>Контактная информация</p>
-        <ul>
-            <li> test@mail.ru</li>
-            <li> 8-800-555-35-35</li>
-        </ul>
+<header class="bg-primary text-white text-center py-3">
+    <h1>Space Agency</h1>
+</header>
 
-    </footer>
-
-    <!-- Modal -->
-<div class="modal-body">
-    <div id="carouselModal" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            {% for item in slider_items %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{{ item.image.url }}" class="d-block w-100" alt="{{ item.title }}">
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Основное изображение -->
+            <div class="main-image">
+                <img id="mainImage" src="{{ slider_items.0.image.url }}" class="img-fluid"
+                     alt="{{ slider_items.0.title }}">
             </div>
-            {% endfor %}
+
+            <!-- Маленькие изображения (как в Slick Slider) -->
+            <div class="thumbnail-images ">
+                <div class="arrow-left">
+                    <button type="button" class="slick-prev">
+                         &#8592;
+                    </button>
+                </div>
+                {% for item in slider_items %}
+                <div>
+                    <img class="thumb" src="{{ item.image.url }}" alt="{{ item.title }}" width="55%" height="55%">
+                </div>
+                {% endfor %}
+                <div class="arrow-right">
+                    <button type="button" class="slick-next">
+                        &#8594;
+                    </button>
+                </div>
+            </div>
+
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-    <!-- Кнопки Previous и Next -->
-    <div class="text-center mt-3">
-        <button class="btn btn-secondary carousel-control-prev" type="button" data-bs-target="#carouselModal" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-    </div>
-    <div class="text-center mt-3">
-        <button class="btn btn-secondary carousel-control-next" type="button" data-bs-target="#carouselModal" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
 </div>
 
+<!-- Подвал страницы -->
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    <p>Контактная информация</p>
+    <ul>
+        <li>test@mail.ru</li>
+        <li>8-800-555-35-35</li>
+    </ul>
+</footer>
 
+<!-- Полноэкранный просмотр фотографий -->
+<div class="fullscreen-image" id="fullscreenImage">
+    <span class="close-button">&times;</span>
+    <img src="" alt="">
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('.slider-for').slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                arrows: true,
-                fade: true,
-                asNavFor: '.slider-nav'
-            });
-            $('.slider-nav').slick({
-                slidesToShow: 3,
-                slidesToScroll: 1,
-                asNavFor: '.slider-for',
-                dots: true,
-                centerMode: true,
-                focusOnSelect: true
-            });
-
-            // Handle opening modal with correct slide
-            $('.slider-for img').on('click', function() {
-                const slideIndex = $(this).data('bs-slide-to');
-                const modalCarousel = new bootstrap.Carousel('#carouselModal');
-                modalCarousel.to(slideIndex);
-            });
+<!-- Скрипты -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Инициализация карусели Slick Slider
+        $('.thumbnail-images').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            arrows: true,
+            prevArrow: '<button type="button" class="slick-prev"><i class="bi bi-arrow-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="bi bi-arrow-right"></i></button>',
+            responsive: [
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 1
+                    }
+                }
+            ]
         });
-    </script>
+
+        // Обработчик клика на маленькие изображения
+        $('.thumb').click(function() {
+            var imageUrl = $(this).attr('src'); // Получаем URL щелкнутой миниатюры
+            $('#mainImage').attr('src', imageUrl); // Устанавливаем URL щелкнутой миниатюры в большое изображение
+            $('#fullscreenImage img').attr('src', imageUrl); // Устанавливаем URL щелкнутой миниатюры в полноэкранное изображение
+            $('#fullscreenImage').fadeIn(); // Показываем полноэкранное изображение
+        });
+
+        // Обновление большого изображения после смены слайда
+        $('.thumbnail-images').on('afterChange', function(event, slick, currentSlide) {
+            var nextImage = $('.slick-current .thumb').attr('src'); // Получаем URL изображения текущего слайда
+            $('#mainImage').attr('src', nextImage); // Устанавливаем URL текущего изображения в большое изображение
+            $('#fullscreenImage img').attr('src', nextImage); // Устанавливаем URL текущего изображения в полноэкранное изображение
+        });
+
+        // Обработчик клика на основное изображение для полноэкранного режима
+        $('#mainImage').click(function() {
+            var imageUrl = $('#mainImage').attr('src'); // Получаем URL изображения текущего большого изображения
+            $('#fullscreenImage img').attr('src', imageUrl); // Устанавливаем URL текущего изображения в полноэкранное изображение
+            $('#fullscreenImage').fadeIn(); // Показываем полноэкранное изображение
+        });
+
+        // Закрытие полноэкранного режима
+        $('#fullscreenImage, .close-button').click(function() {
+            $('#fullscreenImage').fadeOut();
+        });
+    });
+</script>
+
+
 </body>
 </html>
